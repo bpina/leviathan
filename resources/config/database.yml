@@ -1,0 +1,5 @@
+database:
+  username: leviathan
+  password: 
+  host: localhost
+  port: 5432
