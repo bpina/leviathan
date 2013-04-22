@@ -2,12 +2,16 @@ package org.leviathan.message
 
 import net.noerd.prequel.DatabaseConfig
 import org.msgpack._
+import org.msgpack.`type`.Value
 
-abstract class Message {
-  protected var _collection = ""
-  protected var _owner = ""
+class Message(data: Map[Value,Value]) {
+  var appId = ""
+  var host = ""
+  var ip = ""
+  var duration = ""
 
   final def store(db: DatabaseConfig) {
+    val collection = MessageUtil.getCollectionName(data)
     val fields = getFields
 
     if(fields == null) {
@@ -19,9 +23,14 @@ abstract class Message {
     val columnList = columns reduce {(a, b) => s"$a, $b" }
     val valueList = values reduce {(a, b) => s"$a, ?" }
 
-    db.transaction { t => t.execute(String.format("insert into $_collection ($columnList) values ($valueList)", values)) }
+    db.transaction { t => t.execute(String.format("insert into $collection ($columnList) values ($valueList)", values)) }
   } 
   
-  def getFields : Map[String,String]
-
+  def getFields : Map[String,String] = {
+    Map[String,String](
+        "app_id" -> appId,
+        "host" -> host,
+        "ip" -> ip
+    )
+  }
 }

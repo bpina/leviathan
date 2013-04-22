@@ -18,7 +18,7 @@ class LeviathanServerHandler(database: DatabaseConfig) extends SimpleChannelUpst
     val message = MessageFactory.getMessage(data)
 
     if (message != null) message.store(database)
-    else throw new Exception("Message could not be parsed")
+    else throw new Exception("Unsupported message format.")
   }
 
   override def exceptionCaught(ctx: ChannelHandlerContext, e: ExceptionEvent) {
